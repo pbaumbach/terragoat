@@ -20,6 +20,28 @@ resource "aws_s3_bucket" "data" {
   })
 }
 
+
+resource "aws_s3_bucket" "data_log_bucket" {
+  bucket = "data-log-bucket"
+}
+
+resource "aws_s3_bucket_logging" "data" {
+  bucket = aws_s3_bucket.data.id
+
+  target_bucket = aws_s3_bucket.data_log_bucket.id
+  target_prefix = "log/"
+}
+
+
+
+resource "aws_s3_bucket_versioning" "data" {
+  bucket = aws_s3_bucket.data.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
 resource "aws_s3_bucket_object" "data_object" {
   bucket = aws_s3_bucket.data.id
   key    = "customer-master.xlsx"
@@ -61,6 +83,19 @@ resource "aws_s3_bucket" "financials" {
   })
 
 }
+
+
+resource "aws_s3_bucket" "financials_log_bucket" {
+  bucket = "financials-log-bucket"
+}
+
+resource "aws_s3_bucket_logging" "financials" {
+  bucket = aws_s3_bucket.financials.id
+
+  target_bucket = aws_s3_bucket.financials_log_bucket.id
+  target_prefix = "log/"
+}
+
 
 resource "aws_s3_bucket" "operations" {
   # bucket is not encrypted
